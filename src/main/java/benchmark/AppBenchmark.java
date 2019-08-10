@@ -1,6 +1,7 @@
 package benchmark;
 
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -16,6 +17,9 @@ public class AppBenchmark {
     public static void main(String[] args) throws Exception {
         org.openjdk.jmh.Main.main(args);
     }
+
+    @Param({"synchronized", "lock"})
+    private String lockMode;
 
     private static class Counter {
         private long counter;
@@ -37,6 +41,16 @@ public class AppBenchmark {
     @Benchmark
     @Warmup(iterations = 3)
     @Measurement(iterations = 5) // count of iteration per benchmark
+    public void measure(SynchronizedExample synchronizedExample, LockExample lockExample) {
+        switch (lockMode) {
+            case "synchronized":
+                synchronizedBenchmark(synchronizedExample);
+            case "lock":
+                reentrantLockBenchmark(lockExample);
+        }
+    }
+
+
     public void reentrantLockBenchmark(LockExample lockExample) {
         lockExample.lock.lock();
         try {
@@ -47,14 +61,10 @@ public class AppBenchmark {
         }
     }
 
-    @Benchmark
-    @Warmup(iterations = 3)
-    @Measurement(iterations = 5) // count of iteration per benchmark
     public void synchronizedBenchmark(SynchronizedExample synchronizedExample) {
 
         synchronized (synchronizedExample.lock) {
             synchronizedExample.counter.counter++;
         }
-
     }
 }
