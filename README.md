@@ -1,5 +1,5 @@
 # Description
-Jmh tests for demonstration difference between `Lock` and `Synchronized` for the following are JDK: 7,8,11,12
+Jmh tests for demonstration difference between `Lock` and `Synchronized` for the following are JDKs: 7,8,11,12
 
 # JDK 1.7.0_80, VM 24.80-b11
 ```bash
